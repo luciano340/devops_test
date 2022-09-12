@@ -17,9 +17,16 @@ resource "aws_iam_role" "add_role" {
 EOF
 }
 
+#Aplicando politica o qual da permissão para registrar logs no CloudWatch
 resource "aws_iam_role_policy_attachment" "codebuild-CloudWatchFullAccess" {
   role = aws_iam_role.add_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+}
+
+#Aplicando politica o qual da permissão para registrar logs no CloudWatch
+resource "aws_iam_role_policy_attachment" "codebuild-container" {
+  role = aws_iam_role.add_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
 }
 
 #Criando codebuild
@@ -28,6 +35,7 @@ resource "aws_codebuild_project" "add_codebuild" {
     build_timeout = "120"
     service_role = aws_iam_role.add_role.arn
 
+    #Não é necessário gerar artefato nesse tipo de build
     artifacts {
         type = "NO_ARTIFACTS"
     }
@@ -37,11 +45,12 @@ resource "aws_codebuild_project" "add_codebuild" {
         image                       = "aws/codebuild/standard:6.0"
         type                        = "LINUX_CONTAINER"
         image_pull_credentials_type = "CODEBUILD"
-
+        privileged_mode             =  true
+        
         environment_variable {
         name  = "REPO_ECR"
         value = "${var.ecr_url}"
-      }
+        }
     }
 
     source {
