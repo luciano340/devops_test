@@ -1,5 +1,8 @@
 version: 0.2
 phases:
+    install:
+        runtime-versions:
+            golang: 1.13
     pre_build:
         commands:
             - echo Logging in to Amazon ECR...
@@ -11,6 +14,8 @@ phases:
             - IMAGE_TAG=${COMMIT_HASH:=latest}
     build:
         commands:
+            - echo Iniciando teste! `date`
+            - go teste main_test.go
             - echo Build started on `date`
             - echo Building the Docker image...
             - docker build -t $REPOSITORY_URI:latest .
