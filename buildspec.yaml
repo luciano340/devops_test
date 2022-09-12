@@ -15,7 +15,7 @@ phases:
     build:
         commands:
             - echo Iniciando teste! `date`
-            - go teste
+            - go test
             - echo Build started on `date`
             - echo Building the Docker image...
             - docker build -t $REPOSITORY_URI:latest .
