@@ -36,5 +36,7 @@ phases:
             - echo "Update Kube Config"      
             - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
             - echo "Apply changes to kube manifests"
+            - TESTE=$(envsubst < k8s/deploy.yml)
+            - echo ${TESTE}
             - envsubst < k8s/deploy.yml | kubectl apply -f - 2> /tmp/error.log
             - kubectl apply -f k8s/hpa.yml
