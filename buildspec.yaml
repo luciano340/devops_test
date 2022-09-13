@@ -8,15 +8,13 @@ phases:
         commands:
             - echo Logging in to Amazon ECR...
             - aws --version
-            - _PASSWD=$(echo ${REPO_ECR} | cut -d\/ -f1)
-            - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${_PASSWD}
             - REPOSITORY_URI=${REPO_ECR}
             - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-            - IMAGE_TAG=${COMMIT_HASH:=latest}
+            - export IMAGE_TAG=${COMMIT_HASH:=latest}
     build:
         on-failure: ABORT
         commands:
-            - echo Iniciando teste! `date`
+            - echo Starting test! `date`
             - go mod init main_test && go get -u github.com/gorilla/mux && go mod tidy
             - go test
             - echo Build started on `date`
