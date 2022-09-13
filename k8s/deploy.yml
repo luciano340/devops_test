@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   labels:
     component: ninja
-  name: devops_teste_ninja
-  namespace: ninja_space
+  name: devops-teste-ninja
 spec:
   selector:
     matchLabels:
@@ -16,8 +15,8 @@ spec:
         component: ninja
     spec:
       containers:
-      - name: lets_be_a_ninja
-        image: ${IMAGE_TAG}:latest
+      - name: lets-be-a-ninja
+        image: ${K8S_DOCKER_IMG}:latest
 
         resources:
           requests:
@@ -32,8 +31,8 @@ spec:
             path: /healthcheck
             port: 80
           periodSeconds: 30
-          failureThreshold: 2
-          successThreshold: 2
+          failureThreshold: 1
+          successThreshold: 1
           timeoutSeconds: 5
 
         imagePullPolicy: Always
@@ -41,13 +40,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: LB-ninja
+  name: lb-ninja
 spec:
   selector:
     component: ninja
   type: LoadBalancer
   ports:
-  - name: goninja-LB
+  - name: goninja-lb
     port: 80
     protocol: TCP
     targetPort: 8000
