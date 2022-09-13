@@ -11,7 +11,7 @@ spec:
   replicas: 2
   template:
     metadata:
-      labels:o
+      labels:
         component: ninja
     spec:
       containers:
