@@ -36,7 +36,6 @@ phases:
             - echo "Update Kube Config"      
             - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
             - echo "Apply changes to kube manifests"
-            - echo sed -i "s/__dockerimg__/${K8S_DOCKER_IMG}/" k8s/deploy.yml
-            - sed -i "s/__dockerimg__/${K8S_DOCKER_IMG}/" k8s/deploy.yml
+            - sed -i "s#__dockerimg__#${K8S_DOCKER_IMG}#" k8s/deploy.yml
             - kubectl apply -f k8s/deploy.yml
             - kubectl apply -f k8s/hpa.yml
