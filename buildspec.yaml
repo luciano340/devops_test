@@ -8,11 +8,11 @@ phases:
         commands:
             - echo Logging in to Amazon ECR...
             - aws --version
-            - _PASSWD=$(echo ${REPO_ECR} | cut -d\/ -f1,2)
-            - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${_PASSWD}
+            - _PASSWD=$(echo ${REPO_ECR} | cut -d\/ -f1)
+            - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${_PASSWD}
             - REPOSITORY_URI=${REPO_ECR}
             - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-            - export IMAGE_TAG=${COMMIT_HASH:=latest}
+            - IMAGE_TAG=${COMMIT_HASH:=latest}
     build:
         on-failure: ABORT
         commands:
@@ -30,3 +30,14 @@ phases:
             - echo Pushing the Docker images...
             - docker push $REPOSITORY_URI:latest
             - docker push $REPOSITORY_URI:$IMAGE_TAG
+            - echo Setting k8s `date`
+            - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
+            - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
+            - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
+            - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
+            - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
+            - echo "Update Kube Config"      
+            - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+            - echo "Apply changes to kube manifests"
+            - envsubst < k8s/deploy.yml | kubectl apply -f -
+            - kubectl apply -f k8s/hpa.yml
