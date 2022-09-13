@@ -48,7 +48,7 @@ module "ecr" {
 module "codebuild" {
   source = "./modules/codebuild"
   prefix = var.prefix
-  policy_arn = module.eks.role_arn
+  repo_url = var.repo_url
   retention_days = var.retention_days
   ecr_url = module.ecr.ecr_url
-}
+  }

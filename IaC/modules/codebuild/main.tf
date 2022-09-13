@@ -2,19 +2,19 @@ resource "aws_iam_role" "add_role" {
   name = "codebuild_role"
 
   assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
     {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "codebuild.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "codebuild.amazonaws.com"
+          },
+          "Action": "sts:AssumeRole"
+        }
+      ]
     }
-  ]
-}
-EOF
+    EOF
 }
 
 #Aplicando politica o qual da permissão para registrar logs no CloudWatch
@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "codebuild-CloudWatchFullAccess" {
 }
 
 #Aplicando politica o qual da permissão para registrar logs no CloudWatch
-resource "aws_iam_role_policy_attachment" "codebuild-container" {
+resource "aws_iam_role_policy_attachment" "codebuild-ecr" {
   role = aws_iam_role.add_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
 }
@@ -55,7 +55,7 @@ resource "aws_codebuild_project" "add_codebuild" {
 
     source {
         type            = "GITHUB"
-        location        = "https://github.com/luciano340/devops_test.git"
+        location        = "${var.repo_url}"
         git_clone_depth = 1
     }
 

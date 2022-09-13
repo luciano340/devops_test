@@ -1,5 +1,6 @@
 prefix = "ninja"
 cluster_name = "ninja_is_alive"
+repo_url = "https://github.com/luciano340/devops_test.git"
 retention_days = 14
 desired_size = 2
 max_size = 4

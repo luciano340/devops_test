@@ -26,15 +26,6 @@ spec:
             cpu: "1"
             memory: 128Mi
 
-        livenessProbe:
-          httpGet:
-            path: /healthcheck
-            port: 80
-          periodSeconds: 30
-          failureThreshold: 1
-          successThreshold: 1
-          timeoutSeconds: 5
-
         imagePullPolicy: Always
 ---
 apiVersion: v1
