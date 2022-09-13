@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: ninja
+  name: devops_teste_ninja
+  namespace: ninja_space
+spec:
+  selector:
+    matchLabels:
+      component: ninja
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        component: ninja
+    spec:
+      containers:
+      - name: lets_be_a_ninja
+        image: ${IMAGE_TAG}:latest
+
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: 64Mi
+          limits:
+            cpu: "1"
+            memory: 128Mi
+
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 80
+          periodSeconds: 30
+          failureThreshold: 2
+          successThreshold: 2
+          timeoutSeconds: 5
+
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: LB-ninja
+spec:
+  selector:
+    component: ninja
+  type: LoadBalancer
+  ports:
+  - name: goninja-LB
+    port: 80
+    protocol: TCP
+    targetPort: 8000
