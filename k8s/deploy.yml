@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: lets-be-a-ninja
-        image: PdockerimgP:latest
+        image: PdockerimgP
 
         resources:
           requests:
