@@ -26,7 +26,7 @@ phases:
             - export K8S_DOCKER_IMG=$REPOSITORY_URI:$IMAGE_TAG
             - echo ${K8S_DOCKER_IMG}
     post_build:
-        on-failure: ABORT
+        #on-failure: ABORT
         commands:
             - echo Build completed on `date`
             - echo Pushing the Docker images...
@@ -39,4 +39,5 @@ phases:
             - TESTE=$(envsubst < k8s/deploy.yml)
             - echo ${TESTE}
             - envsubst < k8s/deploy.yml | kubectl apply -f - 2> /tmp/error.log
+            - cat /tmp/error.log
             - kubectl apply -f k8s/hpa.yml
