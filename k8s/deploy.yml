@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: lets-be-a-ninja
-        image: ${K8S_DOCKER_IMG}:latest
+        image: __dockerimg__:latest
 
         resources:
           requests:
