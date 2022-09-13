@@ -33,7 +33,8 @@ phases:
             - docker push $REPOSITORY_URI:latest
             - docker push $REPOSITORY_URI:$IMAGE_TAG
             - echo Setting k8s `date`
-            - echo "Update Kube Config"      
+            - echo "Update Kube Config"
+            - aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900 
             - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
             - echo "Apply changes to kube manifests"
             - sed -i "s#__dockerimg__#${K8S_DOCKER_IMG}#" k8s/deploy.yml
