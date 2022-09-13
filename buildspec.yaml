@@ -23,6 +23,8 @@ phases:
             - echo Building the Docker image...
             - docker build -t $REPOSITORY_URI:latest .
             - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+            - export K8S_DOCKER_IMG=$REPOSITORY_URI:$IMAGE_TAG
+            - echo ${K8S_DOCKER_IMG}
     post_build:
         on-failure: ABORT
         commands:
